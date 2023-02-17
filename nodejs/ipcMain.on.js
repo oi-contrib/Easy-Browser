@@ -78,8 +78,12 @@ module.exports = function (win) {
             if (url == 'about:blank') return;
 
             for (let key in browserUrls) {
-                if (decodeURIComponent(browserUrls[key]).replace(/^file:\/{2,3}/, '') == decodeURIComponent(url).replace(/^file:\/{2,3}/, '')) {
-                    return;
+                try {
+                    if (decodeURIComponent(browserUrls[key]).replace(/^file:\/{2,3}/, '') == decodeURIComponent(url).replace(/^file:\/{2,3}/, '')) {
+                        return;
+                    }
+                } catch (e) {
+                    console.error(e);
                 }
             }
 
@@ -130,19 +134,6 @@ module.exports = function (win) {
     Menu.setApplicationMenu(Menu.buildFromTemplate([{
         label: 'Easy Browser',
         submenu: [{
-            label: "关于",
-            click: function () {
-
-            }
-        },
-        {
-            label: "更新...",
-            click: function () {
-
-            }
-        }, {
-            type: 'separator'
-        }, {
             label: '关闭',
             accelerator: 'CmdOrCtrl+Q',
             click: () => {

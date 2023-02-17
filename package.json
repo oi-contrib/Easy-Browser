@@ -1,11 +1,11 @@
 {
   "name": "easy-browser",
-  "version": "0.1.0-dev",
+  "version": "0.1.0",
   "description": "一个简单的定制化浏览器",
   "main": "index.js",
   "scripts": {
     "dev": "webpack server --config ./config/webpack.dev.js",
-    "build": "webpack --config ./config/webpack.prod.js && electron-builder"
+    "build": "webpack --config ./config/webpack.prod.js && node ./script/public.js && electron-builder"
   },
   "keywords": [
     "electron",
@@ -24,6 +24,15 @@
       "./preload.js",
       "./dist/**/*",
       "./images/**/*"
+    ],
+    "fileAssociations": [
+      {
+        "ext": "html",
+        "name": "Easy Browser File",
+        "description": "Easy Browser File",
+        "icon": "images/logo",
+        "role": "Editor"
+      }
     ],
     "mac": {
       "icon": "./images/logo.icns",

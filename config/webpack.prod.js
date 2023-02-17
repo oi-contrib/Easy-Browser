@@ -5,9 +5,9 @@ const TerserPlugin = require('terser-webpack-plugin');
 config.mode = "production";
 config.output = {
     path: path.resolve(__dirname, "../dist"),
-    filename: "[name].[contenthash:10].js",
-    chunkFilename: "[name].[contenthash:10].chunk.js",
-    assetModuleFilename: "[hash:10][ext][query]",
+    filename: "[name].js",
+    chunkFilename: "bundle/[name].js",
+    assetModuleFilename: "images/[name][ext]",
     clean: true
 };
 config.optimization = {

@@ -1,5 +1,6 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
+const watchLauchFromIPC = require("./nodejs/watchLauchFromIPC");
 
 function createWindow() {
     // 创建浏览器窗口
@@ -17,10 +18,11 @@ function createWindow() {
     //  默认最大化
     win.maximize();
 
+    // win.webContents.openDevTools();
+
     // 开发模式
     if (process.env.NODE_ENV == 'development') {
         win.loadURL('http://localhost:3000/');
-        // win.webContents.openDevTools();
     }
 
     // 生产模式
@@ -32,14 +34,40 @@ function createWindow() {
 
 }
 
+let win;
 app.whenReady().then(() => {
 
     // 创建主界面
-    let win = createWindow();
+    win = createWindow();
 
     // 监听来自主界面的请求
     require('./nodejs/ipcMain.on.js')(win);
 
+    let hadLoad = false;
+    win.on("ready-to-show", () => {
+        if (process.platform !== "darwin") {
+
+            if (process.argv.length > 1 && !hadLoad) {
+                hadLoad = true;
+
+                const filePath = process.argv[process.argv.length - 1];
+                watchLauchFromIPC(win, "file:///" + (filePath.replace(/\\/g, "/")));
+            }
+        }
+
+    });
+
+});
+
+// macos ipc 文件启动
+app.on("will-finish-launching", () => {
+    app.on("open-file", (event, filePath) => {
+        event.preventDefault();
+
+        setTimeout(() => {
+            watchLauchFromIPC(win, "file:///" + filePath);
+        }, 500);
+    });
 });
 
 app.on('window-all-closed', () => {

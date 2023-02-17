@@ -1,1 +1,57 @@
-.blank-view {}
+.blank-view {
+    &>div {
+        &.search {
+            text-align: center;
+            margin-top: calc(50vh - 100px);
+
+            &>input {
+                width: 700px;
+                outline: none;
+                border: 2px solid rgb(88, 157, 222);
+                border-radius: 5px;
+                height: 50px;
+                line-height: 50px;
+                padding: 0 5px;
+                background-image: url("../../images/bing.jpeg");
+                padding-left: 50px;
+                background-position: 10px center;
+                background-repeat: no-repeat;
+                background-size: auto 90%;
+                border-radius: 15px;
+                color: rgb(63, 62, 62);
+                font-size: 18px;
+                font-weight: 200;
+
+                &:focus {
+                    border-color: rgb(9, 93, 171);
+                }
+            }
+        }
+
+        &.links {
+            text-align: center;
+            line-height: 50px;
+            color: rgb(190, 189, 189);
+            font-weight: 200;
+
+            &>a {
+                margin: 0 20px;
+                font-size: 14px;
+                color: black;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+
+        &.version {
+            position: fixed;
+            right: 10px;
+            top: 20px;
+            color: rgb(45, 45, 45);
+            font-weight: 200;
+            font-size: 14px;
+        }
+    }
+}

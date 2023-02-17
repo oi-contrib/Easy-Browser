@@ -27,4 +27,4 @@ npm run build
 
 MIT License
 
-Copyright (c) zxl20070701 走一步，再走一步
+Copyright (c) [zxl20070701](https://zxl20070701.github.io/notebook/home.html) 走一步，再走一步

@@ -1,6 +1,8 @@
 import React from 'react'
 import './index.scss'
 
+let browsers = ['browser://blank', 'browser://set']
+
 class Index extends React.Component {
 
     constructor(props) {
@@ -34,7 +36,7 @@ class Index extends React.Component {
                 key: uniqueHash,
                 url,
                 title: "loading...",
-                favicon: ""
+                favicon: "./logo.png"
             }]
         })
 
@@ -64,13 +66,21 @@ class Index extends React.Component {
 
     // 刷新
     refresh() {
+
+        let _url = this.refInput.current.value.trim();
+        if (/^https*:\/\//.test(_url) || /^file:\/\/\//.test(_url) || browsers.indexOf(_url) > -1) {
+            // todo
+        } else {
+            _url = "https://cn.bing.com/search?q=" + _url
+        }
+
         globalThis.nodeRequire.ipcRenderer.send("refresh-view", {
-            url: this.refInput.current.value
+            url: _url
         })
 
         for (let index = 0; index < this.state.navs.length; index++) {
             if (this.state.navs[index].key == this.state.current) {
-                this.state.navs[index].url = this.refInput.current.value
+                this.state.navs[index].url = _url
             }
         }
 
@@ -95,7 +105,7 @@ class Index extends React.Component {
         if (newIndex >= 0) {
             this.changeNav(this.state.navs[newIndex])
         } else {
-            this.newNav("browser://blank")
+            this.newNav(browsers[0])
         }
 
     }
@@ -138,7 +148,14 @@ class Index extends React.Component {
             this.newNav(data.url)
         })
 
-        this.newNav("browser://blank")
+        // 监听页签重置
+        globalThis.nodeRequire.receive("reset-nav", (event, data) => {
+            this.refInput.current.value = data.url
+
+            this.refresh()
+        })
+
+        this.newNav(browsers[0])
     }
 
     render() {
@@ -170,7 +187,7 @@ class Index extends React.Component {
                         {nav.title}
                         <i onClick={(event) => this.close.call(this, event, index)}>×</i>
                     </span>))}
-                    <button onClick={() => this.newNav.call(this, "browser://blank")}>＋</button>
+                    <button onClick={() => this.newNav.call(this, browsers[0])}>＋</button>
                 </div>
             </div>
         </div>)

@@ -23,7 +23,7 @@
 
             &>div {
                 &.content {
-                    height: 55px;
+                    height: 60px;
 
                     &>* {
                         vertical-align: bottom;
@@ -34,7 +34,7 @@
 
                         &.logo {
                             width: 50px;
-                            height: 55px;
+                            height: 60px;
                             background-image: url("../../images/logo.png");
                             background-repeat: no-repeat;
                             background-position: center bottom;
@@ -47,12 +47,24 @@
                         outline: none;
                         border: 1px solid rgb(208, 207, 207);
                         border-radius: 5px;
-                        height: 24px;
+                        height: 30px;
                         padding: 0 5px;
+                        background-image: url("../../images//bing.jpeg");
+                        padding-left: 35px;
+                        background-position: 10px center;
+                        background-repeat: no-repeat;
+                        background-size: auto 90%;
+                        border-radius: 15px;
+                        color: rgb(63, 62, 62);
+
+                        &:focus {
+                            outline: 1px solid rgb(63, 130, 192);
+                            border-color: rgb(63, 130, 192);
+                        }
                     }
 
                     &>button {
-                        height: 24px;
+                        height: 30px;
                         width: 40px;
                         background-image: url("../../images/refresh.png");
                         background-repeat: no-repeat;
@@ -71,8 +83,8 @@
                 }
 
                 &.navs {
-                    padding-top: 10px;
-                    height: 40px;
+                    padding-top: 5px;
+                    height: 35px;
                     display: flex;
 
                     &>span {
