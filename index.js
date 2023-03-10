@@ -51,7 +51,11 @@ app.whenReady().then(() => {
                 hadLoad = true;
 
                 const filePath = process.argv[process.argv.length - 1];
-                watchLauchFromIPC(win, "file:///" + (filePath.replace(/\\/g, "/")));
+
+                // 开发启动的时候传递了一个"."，这种情况需要排除一下 
+                if (filePath && filePath != ".") {
+                    watchLauchFromIPC(win, "file:///" + (filePath.replace(/\\/g, "/")));
+                }
             }
         }
 

@@ -1,4 +1,5 @@
 .index-view {
+
     &>header {
         height: 30px;
         background-color: transparent;
@@ -49,7 +50,7 @@
                         border-radius: 5px;
                         height: 30px;
                         padding: 0 5px;
-                        background-image: url("../../images//bing.jpeg");
+                        background-image: url("../../images/bing.jpeg");
                         padding-left: 35px;
                         background-position: 10px center;
                         background-repeat: no-repeat;
@@ -100,6 +101,7 @@
                         border: 1px solid rgb(197, 195, 195);
                         margin-left: 2px;
                         cursor: pointer;
+                        user-select: none;
 
                         &.active {
                             background-image: radial-gradient(white, white);

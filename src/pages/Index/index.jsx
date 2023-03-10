@@ -25,6 +25,11 @@ class Index extends React.Component {
         globalThis.nodeRequire.ipcRenderer.send("minimize")
     }
 
+    // 最大化应用
+    maximize() {
+        globalThis.nodeRequire.ipcRenderer.send("maximize")
+    }
+
     // 打开新页面
     newNav(url) {
         let uniqueHash = new Date().valueOf()
@@ -36,7 +41,8 @@ class Index extends React.Component {
                 key: uniqueHash,
                 url,
                 title: "loading...",
-                favicon: "./logo.png"
+                favicon: "./logo.png",
+                player: false
             }]
         })
 
@@ -163,6 +169,7 @@ class Index extends React.Component {
             <header>
                 <div className="win-btns">
                     <button className="min" onClick={this.minimize}>最小化</button>
+                    <button className="max" onClick={this.maximize}>最大化</button>
                     <button className="close" onClick={this.exit}>关闭</button>
                 </div>
             </header>
@@ -184,6 +191,9 @@ class Index extends React.Component {
                         <em style={{
                             backgroundImage: "url(" + nav.favicon + ")"
                         }} ></em>
+                        <span style={{
+                            color: "red"
+                        }}>{nav.player ? "♫ " : ""}</span>
                         {nav.title}
                         <i onClick={(event) => this.close.call(this, event, index)}>×</i>
                     </span>))}
