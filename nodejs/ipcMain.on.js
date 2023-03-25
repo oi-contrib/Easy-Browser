@@ -117,54 +117,72 @@ module.exports = function (win) {
 
         // 监听标题改变
         view.webContents.on("page-title-updated", function (event, title) {
-            win.webContents.send("update-pageinfo", {
-                key: viewInfo.key,
-                title
-            });
+            try {
+
+                win.webContents.send("update-pageinfo", {
+                    key: viewInfo.key,
+                    title
+                });
+
+            } catch (e) { }
         });
 
         // 监听地址改变
         view.webContents.on("did-start-navigation", function (event, url) {
-            if (url == 'about:blank') return;
+            try {
 
-            for (let key in browserUrls) {
-                try {
-                    if (decodeURIComponent(browserUrls[key]).replace(/^file:\/{2,3}/, '') == decodeURIComponent(url).replace(/^file:\/{2,3}/, '')) {
-                        return;
+                if (url == 'about:blank') return;
+
+                for (let key in browserUrls) {
+                    try {
+                        if (decodeURIComponent(browserUrls[key]).replace(/^file:\/{2,3}/, '') == decodeURIComponent(url).replace(/^file:\/{2,3}/, '')) {
+                            return;
+                        }
+                    } catch (e) {
+                        console.error(e);
                     }
-                } catch (e) {
-                    console.error(e);
                 }
-            }
 
-            win.webContents.send("update-pageinfo", {
-                key: viewInfo.key,
-                url
-            });
+                win.webContents.send("update-pageinfo", {
+                    key: viewInfo.key,
+                    url
+                });
+
+            } catch (e) { }
         });
 
         // 监听logo改变
         view.webContents.on("page-favicon-updated", function (event, favicons) {
-            win.webContents.send("update-pageinfo", {
-                key: viewInfo.key,
-                favicon: favicons[0]
-            });
+            try {
+                win.webContents.send("update-pageinfo", {
+                    key: viewInfo.key,
+                    favicon: favicons[0]
+                });
+            } catch (e) { }
         });
 
         // 监听新页面打开
         view.webContents.setWindowOpenHandler(function (details) {
-            win.webContents.send("new-nav", {
-                url: details.url
-            });
-            return { action: 'deny' };
+            try {
+
+                win.webContents.send("new-nav", {
+                    url: details.url
+                });
+                return { action: 'deny' };
+
+            } catch (e) { }
         });
 
         // 多媒体开始播放时触发
         view.webContents.on("media-started-playing", function () {
-            win.webContents.send("update-pageinfo", {
-                key: viewInfo.key,
-                player: true
-            });
+            try {
+
+                win.webContents.send("update-pageinfo", {
+                    key: viewInfo.key,
+                    player: true
+                });
+
+            } catch (e) { }
         });
 
         // 当媒体文件暂停或播放完成的时触发
