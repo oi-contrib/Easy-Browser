@@ -1,8 +1,49 @@
 const { ipcMain, app, BrowserView, Menu } = require("electron");
 const path = require('path');
+const dgram = require("dgram");
+
+// 聊天工具
+require('./talker.js')();
 
 let isFullScreen = false, helpSize;
 module.exports = function (win) {
+
+    let views = {}, current, topH = 96;
+    let browserUrls = {}, loadBrowser;
+
+    /**
+    * 监听广播
+    * 监听到来自别的客户端的信息
+    */
+    let server = dgram.createSocket("udp4");
+
+    server.on("error", function (err) {
+        console.log("server error:" + err.stack);
+        server.close();
+    });
+
+    server.on("message", function (msg, rinfo) {
+        // Uint8Array转字符串
+        let dataString = "";
+        for (let i = 0; i < msg.length; i++) {
+            dataString += String.fromCharCode(msg[i]);
+        }
+
+        try {
+            for (let key in views) {
+                views[key].webContents.send("get-msg", {
+                    ip: rinfo.address,
+                    msg: dataString
+                });
+            }
+        } catch (e) {
+            console.log(e);
+            server.close();
+        }
+
+    });
+
+    server.bind(50000);
 
     // 退出
     ipcMain.on("exit", function () {
@@ -29,9 +70,6 @@ module.exports = function (win) {
     /**
      *  窗口管理
      */
-
-    let views = {}, current, topH = 96;
-    let browserUrls = {}, loadBrowser;
 
     // 调整所有窗口大小
     let doResize = () => {
@@ -105,7 +143,14 @@ module.exports = function (win) {
         calcHelp();
         let bounds = win.getBounds();
 
-        const view = new BrowserView();
+        const view = new BrowserView({
+            webPreferences: {
+                nodeIntegration: false,
+                webSecurity: false,
+                preload: path.join(__dirname, '../preload.js'),
+                contextIsolation: true
+            }
+        });
         win.setBrowserView(view);
         view.setBounds({ x: 0, y: topH, width: bounds.width - helpSize, height: bounds.height - topH - helpSize });
 
