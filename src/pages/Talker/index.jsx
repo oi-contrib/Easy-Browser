@@ -1,6 +1,6 @@
 import React from 'react'
 import './index.scss'
-import { animation } from "vislite"
+// import { animation } from "vislite"
 
 document.getElementsByTagName('title')[0].innerText = "Talker 聊天室"
 
@@ -55,7 +55,7 @@ class Talker extends React.Component {
     }
 
     getItem() {
-        for (let index = 0; index < this.state.list.length; index) {
+        for (let index = 0; index < this.state.list.length; index++) {
             if (this.state.list[index].ip == this.state.activeIp) {
                 return this.state.list[index]
             }
@@ -101,12 +101,23 @@ class Talker extends React.Component {
             list: this.state.list
         })
 
-        let oldTop = this.refTalks.current.scrollTop
-        animation(deep => {
-            this.refTalks.current.scrollTop = oldTop + deep * (this.refTalks.current.scrollHeight - oldTop)
-        }, 500, () => {
-            this.refTalks.current.scrollTop = this.refTalks.current.scrollHeight
+        // let oldTop = this.refTalks.current.scrollTop
+        // animation(deep => {
+        //     this.refTalks.current.scrollTop = oldTop + deep * (this.refTalks.current.scrollHeight - oldTop)
+        // }, 500, () => {
+        //     this.refTalks.current.scrollTop = this.refTalks.current.scrollHeight
+        // })
+
+        // 使用原生api替换
+        setTimeout(() => {
+            let nodes = this.refTalks.current.children
+            nodes[nodes.length - 1].scrollIntoView({
+                behavior: 'smooth',
+                block: 'end',
+                inline: 'nearest'
+            })
         })
+
     }
 
     // 按下发送按钮
@@ -143,6 +154,7 @@ class Talker extends React.Component {
             target,
             data
         }
+
         globalThis.nodeRequire.ipcRenderer.send('send-msg', JSON.stringify(msg))
     }
 
