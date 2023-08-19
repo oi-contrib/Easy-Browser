@@ -25,11 +25,8 @@ class Talker extends React.Component {
     render() {
         return (<div className='talker-view'>
             <div className='nav'>
-                <div className='active' onClick={() => this.changNav.call(this, 'talker')}>
+                <div className='active'>
                     聊天室
-                </div>
-                <div onClick={() => this.changNav.call(this, 'history')}>
-                    历史记录
                 </div>
             </div>
             <div className='list'>
@@ -63,11 +60,6 @@ class Talker extends React.Component {
         return {
             messages: []
         }
-    }
-
-    changNav(navName) {
-        if (navName == 'history')
-            alert('开发中，敬请期待！')
     }
 
     changTalker(item) {

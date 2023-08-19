@@ -1,11 +1,11 @@
 {
   "name": "easy-browser",
-  "version": "0.2.0-dev",
+  "version": "0.2.0",
   "description": "一个简单的定制化浏览器",
   "main": "index.js",
   "scripts": {
     "dev": "webpack server --config ./config/webpack.dev.js",
-    "build": "webpack --config ./config/webpack.prod.js && node ./script/public.js && electron-builder"
+    "build": "webpack --config ./config/webpack.prod.js && node ./script/public.js && electron-builder && devby --delete dist"
   },
   "keywords": [
     "electron",
@@ -28,7 +28,10 @@
       "./index.js",
       "./preload.js",
       "./dist/**/*",
-      "./images/**/*"
+      "./images/**/*",
+      "./static/**/*",
+      "./src/styles/normalize.css",
+      "./node_modules/vislite/lib/index.umd.min.js"
     ],
     "fileAssociations": [
       {
@@ -87,10 +90,10 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
-    "devby": "^0.3.0",
+    "devby": "^0.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.4",
-    "vislite": "^0.1.1"
+    "vislite": "^0.4.0"
   }
 }

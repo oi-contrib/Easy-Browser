@@ -15,7 +15,10 @@ class Blank extends React.Component {
     }
 
     goto(pagename) {
-        window.location.href = "#/" + pagename
+        globalThis.nodeRequire.ipcRenderer.send("refresh-view", {
+            url: "browser://" + pagename,
+            updateUrl: true
+        })
     }
 
     render() {

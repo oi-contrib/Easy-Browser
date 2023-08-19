@@ -1,22 +1,17 @@
 const { ipcMain } = require("electron");
 const dgram = require("dgram");
+const { network } = require("devby");
 
 module.exports = function () {
 
     // 获取本机数据
     ipcMain.on("computer", function (event) {
 
-        let networks = require('os').networkInterfaces()
+        let IPv4s = network().IPv4;
         let ip = [], mac = [], username = require('os').hostname()
-
-        for (let typeName in networks) {
-            let network = networks[typeName]
-            for (let index = 0; index < network.length; index++) {
-                if (network[index].family == 'IPv4' && network[index].address != '127.0.0.1') {
-                    ip.push(network[index].address);
-                    mac.push(network[index].mac);
-                }
-            }
+        for (let index = 0; index < IPv4s.length; index++) {
+            ip.push(IPv4s[index].address);
+            mac.push(IPv4s[index].mac);
         }
 
         event.returnValue = {
@@ -41,5 +36,5 @@ module.exports = function () {
 
     });
 
-    
+
 };

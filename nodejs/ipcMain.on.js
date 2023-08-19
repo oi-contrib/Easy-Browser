@@ -110,6 +110,57 @@ module.exports = function (win) {
         doResize();
     });
 
+
+    win.on("focus", () => {
+        /**
+         * 菜单管理
+         */
+
+        Menu.setApplicationMenu(Menu.buildFromTemplate([{
+            label: 'Easy Browser',
+            submenu: [{
+                label: '关闭',
+                accelerator: 'CmdOrCtrl+Q',
+                click: () => {
+                    app.quit();
+                }
+            }]
+        }, {
+            label: "编辑",
+            submenu: [{
+                label: '复制',
+                role: 'copy'
+            }, {
+                label: '剪切',
+                role: 'cut'
+            }, {
+                label: '粘贴',
+                role: 'paste'
+            }, {
+                label: '全选',
+                role: 'selectall'
+            }]
+        }, {
+            label: "编辑操作",
+            submenu: [{
+                label: '全屏控制',
+                accelerator: process.platform == 'darwin' ? 'CmdOrCtrl+Alt+F' : 'F11',
+                click: () => {
+                    win.setFullScreen(!isFullScreen);
+                }
+            }]
+        }, {
+            label: "开发",
+            submenu: [{
+                label: '页面检查器',
+                accelerator: process.platform == 'darwin' ? 'CmdOrCtrl+Alt+I' : 'F12',
+                click: () => {
+                    views[current].webContents.toggleDevTools();
+                }
+            }]
+        }]));
+    });
+
     // 开发模式
     if (process.env.NODE_ENV == 'development') {
         loadBrowser = function (webContents, urlVal) {
@@ -269,54 +320,11 @@ module.exports = function (win) {
     // 刷新窗口
     ipcMain.on("refresh-view", function (event, viewInfo) {
         loadURL(views[current].webContents, viewInfo.url);
+        if (viewInfo.updateUrl) {
+            win.webContents.send("update-url", {
+                url: viewInfo.url
+            });
+        }
     });
-
-    /**
-     * 菜单管理
-     */
-
-    Menu.setApplicationMenu(Menu.buildFromTemplate([{
-        label: 'Easy Browser',
-        submenu: [{
-            label: '关闭',
-            accelerator: 'CmdOrCtrl+Q',
-            click: () => {
-                app.quit();
-            }
-        }]
-    }, {
-        label: "编辑",
-        submenu: [{
-            label: '复制',
-            role: 'copy'
-        }, {
-            label: '剪切',
-            role: 'cut'
-        }, {
-            label: '粘贴',
-            role: 'paste'
-        }, {
-            label: '全选',
-            role: 'selectall'
-        }]
-    }, {
-        label: "编辑操作",
-        submenu: [{
-            label: '全屏控制',
-            accelerator: process.platform == 'darwin' ? 'CmdOrCtrl+Alt+F' : 'F11',
-            click: () => {
-                win.setFullScreen(!isFullScreen);
-            }
-        }]
-    }, {
-        label: "开发",
-        submenu: [{
-            label: '页面检查器',
-            accelerator: process.platform == 'darwin' ? 'CmdOrCtrl+Alt+I' : 'F12',
-            click: () => {
-                views[current].webContents.toggleDevTools();
-            }
-        }]
-    }]));
 
 };

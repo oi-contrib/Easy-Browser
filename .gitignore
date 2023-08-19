@@ -6,3 +6,4 @@ node_modules
 *.zip
 dist
 release
+vislite.min.js

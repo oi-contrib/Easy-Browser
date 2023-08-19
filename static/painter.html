@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>屏幕画笔</title>
+    <link rel="stylesheet" href="../src/styles/normalize.css">
+    <script src="../node_modules/vislite/lib/index.umd.min.js"></script>
+    <script>
+
+        let prePosition_setting, isMouseDown_setting = false, settingEl
+
+        let leftValue, topValue, allStyle
+        function doMouseDown_setting(event) {
+            event.stopPropagation()
+
+            if (!settingEl) settingEl = document.getElementById('setting')
+
+            allStyle = document.defaultView.getComputedStyle(settingEl, null)
+
+            leftValue = allStyle.getPropertyValue('left').replace('px', '')
+            topValue = allStyle.getPropertyValue('top').replace('px', '')
+
+            isMouseDown_setting = true
+        }
+
+        let hadUndone = false
+        function doMouseMove_setting(event) {
+
+            if (isMouseDown_setting) {
+                if (!prePosition_setting) {
+                    prePosition_setting = [event.clientX, event.clientY]
+                } else if (!hadUndone) {
+                    hadUndone = true
+                    setTimeout(() => {
+                        if (prePosition_setting) {
+                            settingEl.style.left = (leftValue - (prePosition_setting[0] - event.clientX)) + "px"
+                            settingEl.style.top = (topValue - (prePosition_setting[1] - event.clientY)) + "px"
+                        }
+                        hadUndone = false
+                    }, 10)
+                }
+            }
+        }
+
+        function doMouseUp_setting() {
+            isMouseDown_setting = false
+            prePosition_setting = null
+        }
+
+        function doReset() {
+            window.location.reload()
+        }
+
+        function doExit() {
+            window.nodeRequire.ipcRenderer.send('exit-painter')
+        }
+    </script>
+    <style>
+        body {
+            overflow: hidden;
+        }
+
+        #mycanvas {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #setting {
+            position: fixed;
+            left: 50vw;
+            top: 20px;
+            transform: translateX(-50%);
+            background-color: white;
+            padding-right: 10px;
+            user-select: none;
+            white-space: nowrap;
+            box-shadow: 0 0 3px #797979;
+            border-radius: 5px;
+        }
+
+        #setting>header {
+            cursor: move;
+            font-size: 16px;
+            vertical-align: revert;
+            padding: 10px;
+            background-color: #e8e8e8;
+            color: #126a7d;
+            border-radius: 5px 0 0 5px;
+        }
+
+        #setting>h2 {
+            font-size: 14px;
+            margin-left: 15px;
+        }
+
+        #setting>header,
+        #setting>h2 {
+            display: inline-block;
+        }
+
+        #setting>select {
+            height: 20px;
+            border: none;
+            border-bottom: 2px solid black;
+            vertical-align: middle;
+            outline: none;
+        }
+
+        #setting>input[type='color'] {
+            width: 50px;
+            height: 30px;
+            padding: 0;
+            border: none;
+            background-color: transparent;
+            vertical-align: middle;
+        }
+
+        #setting>.btns {
+            position: absolute;
+            background-color: #000000;
+            padding: 5px;
+            margin: 0 5px;
+            border-radius: 0 0 5px 5px;
+        }
+
+        #setting>.btns>button {
+            outline: none;
+            border: none;
+        }
+
+        #setting>.btns>button.clear {
+            background-color: #c5d1db;
+            color: white;
+        }
+
+        #setting>.btns>button.exit {
+            background-color: red;
+            color: white;
+        }
+
+        #help-rect {
+            position: fixed;
+            border-style: solid;
+            border-width: 2px;
+            pointer-events: none;
+        }
+
+        #help-text {
+            position: fixed;
+            min-width: 100px;
+            min-height: 14px;
+            font-size: 14px;
+            line-height: 16px;
+            outline: none;
+            border-bottom-width: 1px;
+            border-bottom-style: solid;
+            color: red;
+            border-bottom-color: red;
+        }
+    </style>
+</head>
+
+<body onmousemove="doMouseMove_setting(event);doMouseMove(event)" onmouseup="doMouseUp_setting(event);doMouseUp(event)">
+
+    <!-- 画布 -->
+    <div id="mycanvas" onmousedown="doMouseDown(event)">
+    </div>
+
+    <!-- 辅助框 -->
+    <div id="help-rect"></div>
+    <div id="help-text" contenteditable></div>
+
+    <!-- 配置 -->
+    <div id="setting">
+        <header onmousedown="doMouseDown_setting(event)">
+            屏幕画笔
+        </header>
+        <h2>
+            类型:
+        </h2>
+        <select name="type" onchange="changeType(event)">
+            <option value="auto">自由画笔</option>
+            <option value="rect-stroke">矩形框</option>
+            <option value="rect-fill">填充矩形</option>
+            <option value="text">文字</option>
+        </select>
+        <h2>
+            颜色:
+        </h2>
+        <input type="color" value="#ff0000" onchange="changeColor(event)">
+        <div class="btns">
+            <button class="clear" onclick="doClear()">清空</button>
+            <button class="clear" onclick="doReset()">重置</button>
+            <button class="exit" onclick="doExit()">退出</button>
+        </div>
+    </div>
+
+    <script>
+        let { Canvas } = VISLite
+
+        // 辅助节点
+        let helpRectEl = document.getElementById('help-rect')
+        let helpTextEl = document.getElementById('help-text')
+
+        let painterColor = "red"
+        function changeColor(event) {
+            painterColor = event.target.value
+
+            helpTextEl.style.color = painterColor
+            helpTextEl.style.borderBottomColor = painterColor
+        }
+
+        let painterType = 'auto'
+        function changeType(event) {
+            painterType = event.target.value
+        }
+
+        let painter = new Canvas(document.getElementById('mycanvas'))
+        let isMouseDown = false // 记录鼠标是否按下
+        let isInputText = false // 记录是否在输入文字
+
+        let textPosition
+
+        function doClear() {
+            painter.clearRect(0, 0, window.innerWidth, window.innerHeight)
+        }
+
+        let initPosition
+        function doMouseDown(event) {
+            if (event.target.nodeName != 'CANVAS') return
+
+            painter.config({
+                strokeStyle: painterColor,
+                fillStyle: painterColor,
+                lineWidth: 2,
+                fontSize: 14
+            })
+
+            // 如果之前在输入文字
+            if (isInputText) {
+                let inputTexts = (helpTextEl.innerText || "").replace(/\n\n/g, "\n").split(/\n/)
+                helpTextEl.innerText = ""
+
+                for (let index = 0; index < inputTexts.length; index++) {
+                    painter.fillText(inputTexts[index], textPosition[0], textPosition[1] + (index + 0.5) * 16)
+                }
+
+                isInputText = false
+            }
+
+            isMouseDown = true
+
+            // 自由画笔
+            if (painterType == 'auto') {
+                painter.beginPath().moveTo(event.offsetX, event.offsetY)
+            }
+
+            // 矩形
+            else if (painterType == 'rect-stroke' || painterType == 'rect-fill') {
+                initPosition = [event.offsetX, event.offsetY]
+
+                helpRectEl.style.display = ""
+                helpRectEl.style.width = "0px"
+                helpRectEl.style.height = "0px"
+
+                if (painterType == 'rect-fill') {
+                    helpRectEl.style.backgroundColor = painterColor
+                    helpRectEl.style.borderColor = "transparent"
+                } else {
+                    helpRectEl.style.backgroundColor = "transparent"
+                    helpRectEl.style.borderColor = painterColor
+                }
+            }
+
+            // 文字
+            else if (painterType == 'text') {
+                helpTextEl.style.display = ""
+
+                textPosition = [event.offsetX, event.offsetY - 7]
+
+                helpTextEl.style.left = textPosition[0] + "px"
+                helpTextEl.style.top = textPosition[1] + "px"
+                setTimeout(() => {
+                    helpTextEl.focus()
+                })
+
+                isInputText = true
+            }
+        }
+
+        function doMouseMove(event) {
+            if (event.target.nodeName != 'CANVAS') return
+
+            if (isMouseDown) {
+
+                // 自由画笔
+                if (painterType == 'auto') {
+                    painter.lineTo(event.offsetX, event.offsetY).stroke().beginPath().moveTo(event.offsetX, event.offsetY)
+                }
+
+                // 矩形
+                else if (painterType == 'rect-stroke' || painterType == 'rect-fill') {
+
+                    if (event.offsetX - initPosition[0] < 0) {
+                        helpRectEl.style.left = event.offsetX + "px"
+                        helpRectEl.style.width = (initPosition[0] - event.offsetX) + "px"
+                    } else {
+                        helpRectEl.style.left = initPosition[0] + "px"
+                        helpRectEl.style.width = (event.offsetX - initPosition[0]) + "px"
+                    }
+
+                    if (event.offsetY - initPosition[1] < 0) {
+                        helpRectEl.style.top = event.offsetY + "px"
+                        helpRectEl.style.height = (initPosition[1] - event.offsetY) + "px"
+                    } else {
+                        helpRectEl.style.top = initPosition[1] + "px"
+                        helpRectEl.style.height = (event.offsetY - initPosition[1]) + "px"
+                    }
+
+                }
+
+            }
+        }
+
+        function doMouseUp(event) {
+            if (event.target.nodeName != 'CANVAS') return
+
+            if (isMouseDown) {
+
+                // 矩形
+                if (painterType == 'rect-stroke' || painterType == 'rect-fill') {
+                    helpRectEl.style.display = "none"
+                    painter[(painterType.split('-')[1]) + 'Rect'](initPosition[0], initPosition[1], event.offsetX - initPosition[0], event.offsetY - initPosition[1])
+                }
+            }
+
+            isMouseDown = false
+        }
+
+    </script>
+</body>
+
+</html>
