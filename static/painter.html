@@ -70,7 +70,7 @@
         #setting {
             position: fixed;
             left: 50vw;
-            top: 20px;
+            top: -500px;
             transform: translateX(-50%);
             background-color: white;
             padding-right: 10px;
@@ -226,6 +226,11 @@
         function doClear() {
             painter.clearRect(0, 0, window.innerWidth, window.innerHeight)
         }
+
+        doClear()
+        setTimeout(() => {
+            document.getElementById('setting').style.top = "20px"
+        })
 
         let initPosition
         function doMouseDown(event) {
