@@ -96,7 +96,7 @@
                         white-space: nowrap;
                         text-overflow: ellipsis;
                         overflow: hidden;
-                        padding-right: 20px;
+                        padding-right: 15px;
                         position: relative;
                         border: 1px solid rgb(197, 195, 195);
                         margin-left: 2px;
@@ -125,6 +125,29 @@
                             line-height: 30px;
                             text-align: center;
                             font-style: normal;
+                        }
+
+                        &.play {
+                            padding-right: 30px;
+                        }
+
+                        &>span {
+                            &.audio {
+                                display: none;
+
+                                &.play {
+                                    display: inline-block;
+                                    width: 30px;
+                                    height: 30px;
+                                    background-image: url("../../images/audio.png");
+                                    position: absolute;
+                                    right: 10px;
+                                    top: 0;
+                                    background-position: center center;
+                                    background-repeat: no-repeat;
+                                    pointer-events: none;
+                                }
+                            }
                         }
                     }
 

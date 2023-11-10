@@ -1,7 +1,7 @@
 import React from 'react'
 import './index.scss'
 
-let browsers = ['browser://blank', 'browser://set']
+let browsers = ['browser://blank', 'browser://talker']
 
 class Index extends React.Component {
 
@@ -161,6 +161,16 @@ class Index extends React.Component {
             this.refresh()
         })
 
+        // 监听地址栏修改
+        globalThis.nodeRequire.receive("update-url", (event, data) => {
+            for (let index = 0; index < this.state.navs.length; index++) {
+                if (this.state.navs[index].key == this.state.current) {
+                    this.state.navs[index].url = data.url
+                }
+            }
+            this.refInput.current.value = data.url
+        })
+
         this.newNav(browsers[0])
     }
 
@@ -187,14 +197,12 @@ class Index extends React.Component {
                     <button onClick={() => this.refresh.call(this)}>刷新</button>
                 </div>
                 <div className="navs">
-                    {this.state.navs.map((nav, index) => (<span title={nav.title + "\n" + nav.url} className={nav.key == this.state.current ? 'active' : ''} key={nav.key} onClick={() => this.changeNav.call(this, nav)}>
+                    {this.state.navs.map((nav, index) => (<span title={nav.title + "\n" + nav.url} className={(nav.key == this.state.current ? 'active' : '') + (nav.player ? " play" : "")} key={nav.key} onClick={() => this.changeNav.call(this, nav)}>
                         <em style={{
                             backgroundImage: "url(" + nav.favicon + ")"
                         }} ></em>
-                        <span style={{
-                            color: "red"
-                        }}>{nav.player ? "♫ " : ""}</span>
                         {nav.title}
+                        <span className={"audio" + (nav.player ? " play" : "")}></span>
                         <i onClick={(event) => this.close.call(this, event, index)}>×</i>
                     </span>))}
                     <button onClick={() => this.newNav.call(this, browsers[0])}>＋</button>

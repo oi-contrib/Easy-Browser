@@ -8,10 +8,17 @@ document.getElementsByTagName('title')[0].innerText = "启动页"
 class Blank extends React.Component {
 
     doSearch(event) {
-        var keycode = event.keyCode || event.which
-        if (keycode != 13) return
+        let keycode = event.keyCode || event.which
+        if (keycode != 13 || event.target.value.trim() == '') return
 
         window.location.href = "https://cn.bing.com/search?q=" + event.target.value
+    }
+
+    goto(pagename) {
+        globalThis.nodeRequire.ipcRenderer.send("refresh-view", {
+            url: "browser://" + pagename,
+            updateUrl: true
+        })
     }
 
     render() {
@@ -22,21 +29,19 @@ class Blank extends React.Component {
                 <input placeholder='搜索一下，你就知道～' onKeyDown={(event) => this.doSearch.call(this, event)} />
             </div>
 
-            {/* 常用链接 */}
-            <div className="links">
-                <a href="https://github.com/fragement-contrib/Easy-Browser" target="_blank">源代码</a>
-                ｜
-                <a href="https://zxl20070701.github.io/notebook" target="_blank">查询文档</a>
-                ｜
-                <a href="https://zxl20070701.github.io/toolbox" target="_blank">在线工具</a>
-                ｜
-                <a href="https://github.com/zxl20070701/laboratory" target="_blank">实验仓库</a>
+            {/* 工具列表 */}
+            <div className='tools'>
+                <ul>
+                    <li className='talker' onClick={() => this.goto.call(this, "talker")}>
+                        Talker 聊天室
+                    </li>
+                </ul>
             </div>
 
             {/* 版本 */}
-            <div className="version">
+            <a className="version" href='https://github.com/fragement-contrib/Easy-Browser/blob/master/CHANGELOG' target="_blank">
                 版本：{pkg.version}
-            </div>
+            </a>
 
         </div>)
     }

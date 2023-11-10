@@ -1,0 +1,145 @@
+.talker-view {
+    width: 900px;
+    height: 600px;
+    background-color: rgb(248, 248, 248);
+    display: flex;
+    margin: calc(50vh - 300px) auto;
+    border: 1px solid #9da0a4;
+
+    &>div {
+        height: 100%;
+
+        &.nav {
+            flex-shrink: 0;
+            flex-basis: 60px;
+            background-image: url("../../images/talker.png");
+            background-size: 70% auto;
+            padding-top: 70px;
+            background-position: center 20px;
+            background-repeat: no-repeat;
+            background-color: rgb(243, 241, 241);
+
+            &>div {
+                font-size: 12px;
+                text-align: center;
+                line-height: 35px;
+                cursor: pointer;
+
+                &.active {
+                    background-color: white;
+                    border-left: 2px solid red;
+                }
+            }
+        }
+
+        &.list {
+            white-space: nowrap;
+            flex-grow: 0;
+            flex-shrink: 0;
+            width: 140px;
+            overflow: auto;
+            padding-bottom: 20px;
+            padding-top: 15px;
+            border-right: 1px solid rgb(209, 207, 207);
+
+            &>div {
+                line-height: 1.4em;
+                margin-top: 5px;
+                padding: 0 5px;
+                cursor: pointer;
+
+                &.active {
+                    border-left: 2px solid red;
+                    background-color: white;
+                }
+
+                &>h2 {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    font-size: 14px;
+                }
+
+                &>div {
+                    font-size: 12px;
+                }
+            }
+        }
+
+        &.view {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+
+            &>div {
+
+                &.info,
+                &.talks {
+                    border-bottom: 1px solid rgb(209, 207, 207);
+                }
+
+                &.talks {
+                    flex-grow: 1;
+                    padding: 10px;
+                    overflow: auto;
+
+                    &>.item-view {
+                        margin-bottom: 10px;
+
+                        &.self {
+                            text-align: right;
+                        }
+
+                        &.you {
+                            text-align: left;
+                        }
+
+                        &>.item-value {
+                            background-color: white;
+                            max-width: 500px;
+                            display: inline-block;
+                            padding: 5px 10px;
+                            border-radius: 5px;
+                            overflow: auto;
+                            text-align: left;
+
+                            &>pre {
+                                margin: 0;
+                                font-family: serif;
+                                font-weight: 400;
+                                font-size: 14px;
+                            }
+                        }
+                    }
+                }
+
+                &.info,
+                &.input {
+                    flex-shrink: 0;
+                }
+
+                &.info {
+                    flex-basis: 50px;
+                    display: flex;
+                    align-items: center;
+                    padding-left: 10px;
+                    font-family: cursive;
+                    font-weight: 800;
+                }
+
+                &.input {
+                    flex-basis: 120px;
+
+                    &>textarea {
+                        width: 100%;
+                        height: 100%;
+                        border: none;
+                        outline: none;
+                        background-color: transparent;
+                        resize: none;
+                        padding: 10px;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,8 +1,49 @@
 const { ipcMain, app, BrowserView, Menu } = require("electron");
 const path = require('path');
+const dgram = require("dgram");
+
+// 聊天工具
+require('./talker.js')();
 
 let isFullScreen = false, helpSize;
 module.exports = function (win) {
+
+    let views = {}, current, topH = 96;
+    let browserUrls = {}, loadBrowser;
+
+    /**
+    * 监听广播
+    * 监听到来自别的客户端的信息
+    */
+    let server = dgram.createSocket("udp4");
+
+    server.on("error", function (err) {
+        console.log("server error:" + err.stack);
+        server.close();
+    });
+
+    server.on("message", function (msg, rinfo) {
+        // Uint8Array转字符串
+        let dataString = "";
+        for (let i = 0; i < msg.length; i++) {
+            dataString += String.fromCharCode(msg[i]);
+        }
+
+        try {
+            for (let key in views) {
+                views[key].webContents.send("get-msg", {
+                    ip: rinfo.address,
+                    msg: dataString
+                });
+            }
+        } catch (e) {
+            console.log(e);
+            server.close();
+        }
+
+    });
+
+    server.bind(50000);
 
     // 退出
     ipcMain.on("exit", function () {
@@ -29,9 +70,6 @@ module.exports = function (win) {
     /**
      *  窗口管理
      */
-
-    let views = {}, current, topH = 96;
-    let browserUrls = {}, loadBrowser;
 
     // 调整所有窗口大小
     let doResize = () => {
@@ -72,6 +110,57 @@ module.exports = function (win) {
         doResize();
     });
 
+
+    win.on("focus", () => {
+        /**
+         * 菜单管理
+         */
+
+        Menu.setApplicationMenu(Menu.buildFromTemplate([{
+            label: 'Easy Browser',
+            submenu: [{
+                label: '关闭',
+                accelerator: 'CmdOrCtrl+Q',
+                click: () => {
+                    app.quit();
+                }
+            }]
+        }, {
+            label: "编辑",
+            submenu: [{
+                label: '复制',
+                role: 'copy'
+            }, {
+                label: '剪切',
+                role: 'cut'
+            }, {
+                label: '粘贴',
+                role: 'paste'
+            }, {
+                label: '全选',
+                role: 'selectall'
+            }]
+        }, {
+            label: "编辑操作",
+            submenu: [{
+                label: '全屏控制',
+                accelerator: process.platform == 'darwin' ? 'CmdOrCtrl+Alt+F' : 'F11',
+                click: () => {
+                    win.setFullScreen(!isFullScreen);
+                }
+            }]
+        }, {
+            label: "开发",
+            submenu: [{
+                label: '页面检查器',
+                accelerator: process.platform == 'darwin' ? 'CmdOrCtrl+Alt+I' : 'F12',
+                click: () => {
+                    views[current].webContents.toggleDevTools();
+                }
+            }]
+        }]));
+    });
+
     // 开发模式
     if (process.env.NODE_ENV == 'development') {
         loadBrowser = function (webContents, urlVal) {
@@ -105,7 +194,14 @@ module.exports = function (win) {
         calcHelp();
         let bounds = win.getBounds();
 
-        const view = new BrowserView();
+        const view = new BrowserView({
+            webPreferences: {
+                nodeIntegration: false,
+                webSecurity: false,
+                preload: path.join(__dirname, '../preload.js'),
+                contextIsolation: true
+            }
+        });
         win.setBrowserView(view);
         view.setBounds({ x: 0, y: topH, width: bounds.width - helpSize, height: bounds.height - topH - helpSize });
 
@@ -117,54 +213,72 @@ module.exports = function (win) {
 
         // 监听标题改变
         view.webContents.on("page-title-updated", function (event, title) {
-            win.webContents.send("update-pageinfo", {
-                key: viewInfo.key,
-                title
-            });
+            try {
+
+                win.webContents.send("update-pageinfo", {
+                    key: viewInfo.key,
+                    title
+                });
+
+            } catch (e) { }
         });
 
         // 监听地址改变
         view.webContents.on("did-start-navigation", function (event, url) {
-            if (url == 'about:blank') return;
+            try {
 
-            for (let key in browserUrls) {
-                try {
-                    if (decodeURIComponent(browserUrls[key]).replace(/^file:\/{2,3}/, '') == decodeURIComponent(url).replace(/^file:\/{2,3}/, '')) {
-                        return;
+                if (url == 'about:blank') return;
+
+                for (let key in browserUrls) {
+                    try {
+                        if (decodeURIComponent(browserUrls[key]).replace(/^file:\/{2,3}/, '') == decodeURIComponent(url).replace(/^file:\/{2,3}/, '')) {
+                            return;
+                        }
+                    } catch (e) {
+                        console.error(e);
                     }
-                } catch (e) {
-                    console.error(e);
                 }
-            }
 
-            win.webContents.send("update-pageinfo", {
-                key: viewInfo.key,
-                url
-            });
+                win.webContents.send("update-pageinfo", {
+                    key: viewInfo.key,
+                    url
+                });
+
+            } catch (e) { }
         });
 
         // 监听logo改变
         view.webContents.on("page-favicon-updated", function (event, favicons) {
-            win.webContents.send("update-pageinfo", {
-                key: viewInfo.key,
-                favicon: favicons[0]
-            });
+            try {
+                win.webContents.send("update-pageinfo", {
+                    key: viewInfo.key,
+                    favicon: favicons[0]
+                });
+            } catch (e) { }
         });
 
         // 监听新页面打开
         view.webContents.setWindowOpenHandler(function (details) {
-            win.webContents.send("new-nav", {
-                url: details.url
-            });
-            return { action: 'deny' };
+            try {
+
+                win.webContents.send("new-nav", {
+                    url: details.url
+                });
+                return { action: 'deny' };
+
+            } catch (e) { }
         });
 
         // 多媒体开始播放时触发
         view.webContents.on("media-started-playing", function () {
-            win.webContents.send("update-pageinfo", {
-                key: viewInfo.key,
-                player: true
-            });
+            try {
+
+                win.webContents.send("update-pageinfo", {
+                    key: viewInfo.key,
+                    player: true
+                });
+
+            } catch (e) { }
         });
 
         // 当媒体文件暂停或播放完成的时触发
@@ -206,54 +320,11 @@ module.exports = function (win) {
     // 刷新窗口
     ipcMain.on("refresh-view", function (event, viewInfo) {
         loadURL(views[current].webContents, viewInfo.url);
+        if (viewInfo.updateUrl) {
+            win.webContents.send("update-url", {
+                url: viewInfo.url
+            });
+        }
     });
-
-    /**
-     * 菜单管理
-     */
-
-    Menu.setApplicationMenu(Menu.buildFromTemplate([{
-        label: 'Easy Browser',
-        submenu: [{
-            label: '关闭',
-            accelerator: 'CmdOrCtrl+Q',
-            click: () => {
-                app.quit();
-            }
-        }]
-    }, {
-        label: "编辑",
-        submenu: [{
-            label: '复制',
-            role: 'copy'
-        }, {
-            label: '剪切',
-            role: 'cut'
-        }, {
-            label: '粘贴',
-            role: 'paste'
-        }, {
-            label: '全选',
-            role: 'selectall'
-        }]
-    }, {
-        label: "编辑操作",
-        submenu: [{
-            label: '全屏控制',
-            accelerator: process.platform == 'darwin' ? 'CmdOrCtrl+Alt+F' : 'F11',
-            click: () => {
-                win.setFullScreen(!isFullScreen);
-            }
-        }]
-    }, {
-        label: "开发",
-        submenu: [{
-            label: '页面检查器',
-            accelerator: process.platform == 'darwin' ? 'CmdOrCtrl+Alt+I' : 'F12',
-            click: () => {
-                views[current].webContents.toggleDevTools();
-            }
-        }]
-    }]));
 
 };

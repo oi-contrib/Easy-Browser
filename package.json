@@ -1,16 +1,21 @@
 {
   "name": "easy-browser",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "一个简单的定制化浏览器",
   "main": "index.js",
   "scripts": {
     "dev": "webpack server --config ./config/webpack.dev.js",
-    "build": "webpack --config ./config/webpack.prod.js && node ./script/public.js && electron-builder"
+    "build": "webpack --config ./config/webpack.prod.js && node ./script/public.js && electron-builder && devby --delete dist"
   },
   "keywords": [
     "electron",
     "browser"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fragement-contrib/Easy-Browser.git"
+  },
+  "license": "MIT",
   "author": "zxl20070701",
   "build": {
     "productName": "Easy Browser",
@@ -23,7 +28,10 @@
       "./index.js",
       "./preload.js",
       "./dist/**/*",
-      "./images/**/*"
+      "./images/**/*",
+      "./static/**/*",
+      "./src/styles/normalize.css",
+      "./node_modules/vislite/lib/index.umd.min.js"
     ],
     "fileAssociations": [
       {
@@ -71,9 +79,12 @@
     "@babel/preset-react": "^7.18.6",
     "babel-loader": "^9.1.0",
     "css-loader": "^6.7.2",
-    "electron": "^22.1.0",
-    "electron-builder": "^22.10.3",
+    "electron": "^26.1.0",
+    "electron-builder": "^24.6.4",
     "html-webpack-plugin": "^5.5.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.4.4",
     "sass": "^1.56.1",
     "sass-loader": "^13.2.0",
     "style-loader": "^3.3.1",
@@ -82,8 +93,7 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.4.4"
+    "devby": "^0.5.0",
+    "vislite": "^0.4.0"
   }
 }
