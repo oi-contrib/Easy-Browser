@@ -1,5 +1,5 @@
 const fs = require('fs');
-const deleteSync = require('./deleteSync');
+const { deleteSync } = require("devby");
 
 fs.copyFileSync('./public/logo.png', './dist/logo.png');
 

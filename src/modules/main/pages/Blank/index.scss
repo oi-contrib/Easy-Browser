@@ -20,7 +20,7 @@
             line-height: 50px;
             margin-top: 15px;
             padding: 0 5px;
-            background-image: url("../../images/bing.jpeg");
+            background-image: url("../../../../images/bing.jpeg");
             padding-left: 50px;
             background-position: 10px center;
             background-repeat: no-repeat;
@@ -65,18 +65,27 @@
 
                 &.talker {
                     background-color: rgb(230, 253, 246);
-                    background-image: url("../../images/talker.png");
+                    background-image: url("../../../../images/talker.png");
                 }
             }
         }
     }
 
-    &>.version {
+    &>.aboutUS {
         position: fixed;
         left: 10px;
         bottom: 10px;
         color: black;
-        text-decoration: underline;
         font-size: 12px;
+        background-color: rgb(88, 157, 222);
+        color: white;
+        border-radius: 5px;
+        padding: 5px 10px;
+        border: none;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
     }
 }

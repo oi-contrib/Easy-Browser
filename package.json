@@ -1,6 +1,6 @@
 {
   "name": "easy-browser",
-  "version": "0.2.0",
+  "version": "0.3.0-dev",
   "description": "一个简单的定制化浏览器",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fragement-contrib/Easy-Browser.git"
+    "url": "git+https://github.com/zxl20070701/Easy-Browser.git"
   },
   "license": "MIT",
   "author": "zxl20070701",
@@ -28,10 +28,7 @@
       "./index.js",
       "./preload.js",
       "./dist/**/*",
-      "./images/**/*",
-      "./static/**/*",
-      "./src/styles/normalize.css",
-      "./node_modules/vislite/lib/index.umd.min.js"
+      "./images/**/*"
     ],
     "fileAssociations": [
       {
@@ -85,15 +82,16 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.4",
+    "redux": "^4.2.1",
     "sass": "^1.56.1",
     "sass-loader": "^13.2.0",
     "style-loader": "^3.3.1",
+    "vislite": "^1.0.0-next.5",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
-    "devby": "^0.5.0",
-    "vislite": "^0.4.0"
+    "devby": "^0.6.0"
   }
 }

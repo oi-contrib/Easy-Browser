@@ -2,7 +2,14 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: path.resolve(__dirname, '../src/main.js'),
+    entry: {
+        main: path.resolve(__dirname, '../src/modules/main/index.js'),
+        painter: path.resolve(__dirname, '../src/modules/painter/index.js'),
+    },
+    output: {
+        path: path.resolve(__dirname, "./dist"),
+        filename: "[name]/index.js",
+    },
     module: {
         rules: [
             {
@@ -27,7 +34,14 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
+            filename: "index.html",
             template: path.resolve(__dirname, '../public/index.html'),
+            chunks: ["main"],
+        }),
+        new HtmlWebpackPlugin({
+            filename: "painter.html",
+            template: path.resolve(__dirname, '../public/index.html'),
+            chunks: ["painter"],
         })
     ],
     resolve: {

@@ -1,7 +1,7 @@
 import React from 'react'
 import './index.scss'
 
-import pkg from '../../../package.json'
+import store from '../../stores/index'
 
 document.getElementsByTagName('title')[0].innerText = "启动页"
 
@@ -12,6 +12,16 @@ class Blank extends React.Component {
         if (keycode != 13 || event.target.value.trim() == '') return
 
         window.location.href = "https://cn.bing.com/search?q=" + event.target.value
+    }
+
+    // 关于我们
+    aboutUS() {
+        store.dispatch({
+            type: "openDialog",
+            data: {
+                id: "aboutUS"
+            }
+        })
     }
 
     goto(pagename) {
@@ -39,9 +49,9 @@ class Blank extends React.Component {
             </div>
 
             {/* 版本 */}
-            <a className="version" href='https://github.com/fragement-contrib/Easy-Browser/blob/master/CHANGELOG' target="_blank">
-                版本：{pkg.version}
-            </a>
+            <button className="aboutUS" onClick={() => this.aboutUS.call(this)}>
+                关于我们
+            </button>
 
         </div>)
     }
