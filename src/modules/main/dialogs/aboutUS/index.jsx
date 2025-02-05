@@ -34,7 +34,7 @@ class confirm extends React.Component {
             </div>
             <div className="btn-list">
                 <span className='btn' onClick={() => this.closeDialog.call(this)}>关闭</span>
-                <a className='btn' href="https://github.com/zxl20070701/Easy-Browser" target="_blank">访问源码</a>
+                <a className='btn' href="https://github.com/oi-contrib/Easy-Browser" target="_blank">访问源码</a>
             </div>
         </div >)
     }
