@@ -1,4 +1,4 @@
-# [Easy Browser](https://github.com/zxl20070701/Easy-Browser)
+# [Easy Browser](https://github.com/oi-contrib/Easy-Browser)
 一个简单的定制化浏览器
 
 ## 如何开发？
@@ -45,7 +45,7 @@ npm run build
 
 <img src="./picture/talker.jpg" />
 
-最后，欢迎给我们[留言](https://github.com/zxl20070701/Easy-Browser/issues)提建议，我们将逐步优化和丰富功能。
+最后，欢迎给我们[留言](https://github.com/oi-contrib/Easy-Browser/issues)提建议，我们将逐步优化和丰富功能。
 
 ## 版权
 

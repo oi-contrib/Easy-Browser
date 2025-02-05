@@ -111,7 +111,7 @@ class App extends React.Component {
             strokeStyle: painterColor,
             fillStyle: painterColor,
             lineWidth: 2,
-            fontSize: 14
+            fontSize: 20
         })
 
         // 如果之前在输入文字
@@ -120,7 +120,7 @@ class App extends React.Component {
             this.refHelpText.current.innerText = ""
 
             for (let index = 0; index < inputTexts.length; index++) {
-                painter.fillText(inputTexts[index], textPosition[0], textPosition[1] + (index + 0.5) * 16)
+                painter.fillText(inputTexts[index], textPosition[0], textPosition[1] + (index + 0.5) * 26)
             }
 
             isInputText = false
@@ -253,8 +253,8 @@ class App extends React.Component {
                 position: "fixed",
                 minWidth: "100px",
                 minHeight: "14px",
-                fontSize: "14px",
-                lineHeight: "16px",
+                fontSize: "20px",
+                lineHeight: "26px",
                 outline: "none",
                 color: "red"
             }} ref={this.refHelpText} contentEditable></div>

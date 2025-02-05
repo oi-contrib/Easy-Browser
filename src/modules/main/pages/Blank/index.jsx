@@ -3,15 +3,22 @@ import './index.scss'
 
 import store from '../../stores/index'
 
-document.getElementsByTagName('title')[0].innerText = "启动页"
+document.getElementsByTagName('title')[0].innerText = "欢迎页面"
 
 class Blank extends React.Component {
 
-    doSearch(event) {
-        let keycode = event.keyCode || event.which
-        if (keycode != 13 || event.target.value.trim() == '') return
+    constructor(props) {
+        super(props)
+        this.state = {
+            inputVal: ""
+        }
+    }
 
-        window.location.href = "https://cn.bing.com/search?q=" + event.target.value
+    doSearch() {
+        if (this.state.inputVal.trim() == '') return
+        setTimeout(() => {
+            window.location.href = "https://cn.bing.com/search?q=" + this.state.inputVal
+        })
     }
 
     // 关于我们
@@ -31,27 +38,54 @@ class Blank extends React.Component {
         })
     }
 
+    open(url) {
+        let el = document.createElement("a")
+        el.setAttribute("href", url)
+        el.setAttribute("target", "_blank")
+        el.click()
+    }
+
     render() {
         return (<div className='blank-view'>
 
             {/* 查询输入框 */}
-            <div className="search">
-                <input placeholder='搜索一下，你就知道～' onKeyDown={(event) => this.doSearch.call(this, event)} />
-            </div>
+            <form onSubmit={() => this.doSearch.call(this)}>
+                <div className="search">
+                    <input type="text" value={this.state.inputVal} onChange={
+                        (event) => this.setState({ inputVal: event.target.value })
+                    } placeholder='搜索一下，你就知道～' spellCheck="false" autoComplete="off" />
+                    <div className="btn" onClick={() => this.doSearch.call(this)}>
+                        Search
+                    </div>
+                </div>
+            </form>
 
             {/* 工具列表 */}
             <div className='tools'>
                 <ul>
-                    <li className='talker' onClick={() => this.goto.call(this, "talker")}>
-                        Talker 聊天室
+                    <li onClick={() => this.open.call(this, "https://oi-contrib.github.io/VISLite")}>
+                        <i className='vislite link'></i>
+                        VISLite
+                    </li>
+                    <li onClick={() => this.goto.call(this, "talker")}>
+                        <i className="talker"></i>
+                        聊天室
+                    </li>
+                    <li onClick={() => this.open.call(this, "https://zxl20070701.github.io/notebook")}>
+                        <i className='notebook link'></i>
+                        文档笔记
+                    </li>
+                    <li onClick={() => this.open.call(this, "https://zxl20070701.github.io/toolbox")}>
+                        <i className='toolbox link'></i>
+                        工具箱
                     </li>
                 </ul>
             </div>
 
             {/* 版本 */}
-            <button className="aboutUS" onClick={() => this.aboutUS.call(this)}>
-                关于我们
-            </button>
+            <div className="aboutUS" onClick={() => this.aboutUS.call(this)}>
+                <i></i>关于我们
+            </div>
 
         </div>)
     }

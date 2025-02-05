@@ -1,5 +1,4 @@
-import { legacy_createStore as createStore } from 'redux'
-import { combineReducers } from 'redux'
+import { legacy_createStore as createStore, combineReducers } from 'redux'
 
 import dialogInstance from './dialog.store'
 

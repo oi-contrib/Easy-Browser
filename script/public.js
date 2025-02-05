@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { deleteSync } = require("devby");
+const { deleteSync } = require("oipage");
 
 fs.copyFileSync('./public/logo.png', './dist/logo.png');
 
