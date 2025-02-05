@@ -65,8 +65,16 @@ module.exports = function () {
 
                 win_painter.maximize();
 
-                // win_painter.webContents.openDevTools();
-                win_painter.loadFile('./static/painter.html');
+                // 开发模式
+                if (process.env.NODE_ENV == 'development') {
+                    // win_painter.webContents.openDevTools();
+                    win_painter.loadURL('http://localhost:3000/painter.html');
+                }
+
+                // 生产模式
+                else {
+                    win_painter.loadFile('./dist/painter.html');
+                }
 
                 ipcMain.on("exit-painter", function () {
                     win_painter.destroy();

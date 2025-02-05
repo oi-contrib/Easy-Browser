@@ -1,0 +1,119 @@
+.info-view {
+    position: fixed;
+    left: calc(50vw - 130px);
+    top: calc(50vh - 250px);
+    background-color: transparent;
+    user-select: none;
+    border-radius: 10px;
+    width: 260px;
+    height: 370px;
+    background-color: #dbdde0;
+    border-radius: 10px;
+    text-align: center;
+    padding-top: 20px;
+    box-shadow: #607D8B 0px 0px 14px 3px;
+
+    &>header {
+        font-weight: 800;
+        padding-top: 20px;
+
+        &>div {
+            font-size: 12px;
+            line-height: 2em;
+            font-weight: 200;
+        }
+    }
+
+    &>div {
+        &.tips {
+            font-size: 12px;
+            color: #ffffff;
+            background-color: #e91e63;
+            position: fixed;
+            z-index: -1;
+            user-select: none;
+            width: 90vw;
+            line-height: 30px;
+            height: 30px;
+            left: 5vw;
+            top: 10px;
+            text-align: center;
+        }
+
+        &.current-tips {
+            position: fixed;
+            z-index: -1;
+            width: 100vw;
+            bottom: 100px;
+            left: 0;
+            font-size: 14px;
+            color: white;
+            text-align: center;
+            font-family: cursive;
+        }
+
+        &.logo {
+            background-image: url('../../../../images/logo.png');
+            background-size: 70% auto;
+            background-position: center center;
+            background-repeat: no-repeat;
+            width: 60px;
+            height: 60px;
+            margin: auto;
+            background-color: white;
+            border-radius: 10px;
+        }
+
+        &.content {
+            padding: 0 30px;
+            font-size: 12px;
+            line-height: 1.4em;
+
+            &>div {
+                margin-top: 20px;
+                text-align: left;
+                text-indent: 2em;
+                color: rgb(56, 55, 55);
+
+                &>h2 {
+                    display: inline-block;
+                    font-size: inherit;
+                    text-indent: 0;
+                }
+
+                &>a {
+                    font-weight: 800;
+                    margin: 0 5px;
+                    text-decoration: underline;
+                    color: #2196F3;
+                }
+            }
+        }
+
+        &.btn-list {
+            position: absolute;
+            left: 0;
+            bottom: 15px;
+            width: 100%;
+
+            &>.btn {
+                color: #363737;
+                width: 110px;
+                line-height: 30px;
+                border-radius: 5px;
+                display: inline-block;
+                font-size: 13px;
+                cursor: pointer;
+
+                &:first-child {
+                    background-color: #c1c3c6;
+                }
+
+                &:last-child {
+                    margin-left: 10px;
+                    background-color: #b5b7ba;
+                }
+            }
+        }
+    }
+}

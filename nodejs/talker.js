@@ -1,6 +1,6 @@
 const { ipcMain } = require("electron");
 const dgram = require("dgram");
-const { network } = require("devby");
+const { network } = require("oipage");
 
 module.exports = function () {
 

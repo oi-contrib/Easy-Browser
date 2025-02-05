@@ -46,17 +46,17 @@ body {
         background-color: transparent !important;
 
         &.min {
-            background-image: url("../images/min-btn.png");
+            background-image: url("../../../images/min-btn.png");
             width: 36px;
         }
 
         &.close {
-            background-image: url("../images/close-btn.png");
+            background-image: url("../../../images/close-btn.png");
             width: 59px;
         }
 
         &.max {
-            background-image: url("../images/max-btn.png");
+            background-image: url("../../../images/max-btn.png");
             width: 34px;
         }
     }
